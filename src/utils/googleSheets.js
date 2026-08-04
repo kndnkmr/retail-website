@@ -45,9 +45,8 @@ function getProductsCSVUrl() {
 }
 
 function getSettingsCSVUrl() {
-  // Settings is the second tab — gid varies per sheet
-  // We try fetching by sheet name via the alternate format
-  return `${PUBLISHED_BASE_URL}?output=csv&sheet=Settings`
+  // Settings tab GID (found in sheet URL when clicking the Settings tab)
+  return `${PUBLISHED_BASE_URL}?gid=745929028&single=true&output=csv`
 }
 
 function parseCSVLine(line) {
