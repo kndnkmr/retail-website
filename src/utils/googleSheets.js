@@ -7,20 +7,19 @@
  * 3. This utility fetches data and converts it to JSON for the website
  * 
  * SHEET TABS:
- * - "Products" tab: id | name | category | price | originalPrice | quantity | image | description | inStock | rating | reviews
- * - "Settings" tab: key | value (shop name, phone, address, etc.)
+ * - "Products" tab (gid=0): id | name | category | price | originalPrice | quantity | image | description | inStock | rating | reviews
+ * - "Settings" tab (gid=second sheet): key | value (shop name, phone, address, etc.)
  */
 
-// Replace this with your Google Sheet ID after creating it
-// The Sheet ID is the long string in the URL: https://docs.google.com/spreadsheets/d/{SHEET_ID}/edit
-const SHEET_ID = 'YOUR_GOOGLE_SHEET_ID'
-const PRODUCTS_SHEET = 'Products'
-const SETTINGS_SHEET = 'Settings'
+// Published URL base (from File > Share > Publish to web)
+// This is the part before ?output=csv
+const PUBLISHED_BASE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS5-2j8EkJ-boATyK19kRUJ2xRHxFc4x-mQC0SJ-YMuhqqNaFsd5qrLtv2VcR96IzjioRclX1XKnOEI/pub'
+
 const PRODUCTS_CACHE_KEY = 'gopalshop-products-cache'
 const SETTINGS_CACHE_KEY = 'gopalshop-settings-cache'
 const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
 
-// Default settings (used when Google Sheet is not configured)
+// Default settings (used when Settings tab doesn't exist or can't be fetched)
 const DEFAULT_SETTINGS = {
   shopName: 'Gopal Shop',
   tagline: 'Your Trusted Neighborhood Store',
@@ -33,7 +32,7 @@ const DEFAULT_SETTINGS = {
   deliveryFee: '40',
   freeDeliveryAbove: '500',
   heroTitle: 'Fresh Groceries at Your Doorstep',
-  heroSubtitle: 'Quality products at the best prices. Order now and get it delivered fresh to your home. Your trusted neighborhood store, now online!',
+  heroSubtitle: 'Quality products at the best prices. Order now and get it delivered fresh to your home!',
   heroImage: 'https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600&h=400&fit=crop',
   landmark1: '5 mins walk from Main Bus Stand',
   landmark2: 'Near City Market Junction',
@@ -41,8 +40,14 @@ const DEFAULT_SETTINGS = {
   currency: '₹',
 }
 
-function getPublicCSVUrl(sheetId, sheetName) {
-  return `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`
+function getProductsCSVUrl() {
+  return `${PUBLISHED_BASE_URL}?gid=0&single=true&output=csv`
+}
+
+function getSettingsCSVUrl() {
+  // Settings is the second tab — gid varies per sheet
+  // We try fetching by sheet name via the alternate format
+  return `${PUBLISHED_BASE_URL}?output=csv&sheet=Settings`
 }
 
 function parseCSVLine(line) {
@@ -70,7 +75,7 @@ function parseCSVLine(line) {
   return result
 }
 
-function parseCSV(csvText) {
+function parseProductsCSV(csvText) {
   const lines = csvText.split('\n').filter(line => line.trim())
   if (lines.length < 2) return []
 
@@ -112,11 +117,14 @@ function parseSettingsCSV(csvText) {
   const lines = csvText.split('\n').filter(line => line.trim())
   if (lines.length < 2) return {}
 
+  // Check if this is actually the Products sheet (wrong data)
+  const firstHeader = parseCSVLine(lines[0])[0].toLowerCase().trim()
+  if (firstHeader === 'id') return {} // This is the products sheet, not settings
+
   const settings = {}
   for (let i = 1; i < lines.length; i++) {
     const values = parseCSVLine(lines[i])
     if (values.length >= 2 && values[0]) {
-      // key is column A, value is column B
       const key = values[0].trim()
       const value = values[1].trim()
       if (key) settings[key] = value
@@ -151,18 +159,18 @@ export async function fetchProducts() {
   const cached = getCache(PRODUCTS_CACHE_KEY)
   if (cached) return cached
 
-  if (SHEET_ID === 'YOUR_GOOGLE_SHEET_ID') {
+  if (!PUBLISHED_BASE_URL || PUBLISHED_BASE_URL.includes('YOUR_')) {
     const localProducts = await import('../data/products.json')
     return localProducts.default
   }
 
   try {
-    const url = getPublicCSVUrl(SHEET_ID, PRODUCTS_SHEET)
+    const url = getProductsCSVUrl()
     const response = await fetch(url)
     if (!response.ok) throw new Error(`HTTP ${response.status}`)
 
     const csvText = await response.text()
-    const products = parseCSV(csvText)
+    const products = parseProductsCSV(csvText)
 
     if (products.length > 0) {
       setCache(PRODUCTS_CACHE_KEY, products)
@@ -180,22 +188,28 @@ export async function fetchSettings() {
   const cached = getCache(SETTINGS_CACHE_KEY)
   if (cached) return cached
 
-  if (SHEET_ID === 'YOUR_GOOGLE_SHEET_ID') {
+  if (!PUBLISHED_BASE_URL || PUBLISHED_BASE_URL.includes('YOUR_')) {
     return DEFAULT_SETTINGS
   }
 
   try {
-    const url = getPublicCSVUrl(SHEET_ID, SETTINGS_SHEET)
+    const url = getSettingsCSVUrl()
     const response = await fetch(url)
     if (!response.ok) throw new Error(`HTTP ${response.status}`)
 
     const csvText = await response.text()
     const sheetSettings = parseSettingsCSV(csvText)
 
-    // Merge with defaults (sheet values override defaults)
-    const merged = { ...DEFAULT_SETTINGS, ...sheetSettings }
-    setCache(SETTINGS_CACHE_KEY, merged)
-    return merged
+    // If we got valid settings (not empty / not products data), merge with defaults
+    if (Object.keys(sheetSettings).length > 0) {
+      const merged = { ...DEFAULT_SETTINGS, ...sheetSettings }
+      setCache(SETTINGS_CACHE_KEY, merged)
+      return merged
+    }
+
+    // Settings tab doesn't exist yet, use defaults
+    setCache(SETTINGS_CACHE_KEY, DEFAULT_SETTINGS)
+    return DEFAULT_SETTINGS
   } catch (error) {
     console.warn('Failed to fetch settings from Google Sheets:', error.message)
     return DEFAULT_SETTINGS
@@ -204,8 +218,4 @@ export async function fetchSettings() {
 
 export function getDefaultSettings() {
   return DEFAULT_SETTINGS
-}
-
-export function isSheetConfigured() {
-  return SHEET_ID !== 'YOUR_GOOGLE_SHEET_ID'
 }
