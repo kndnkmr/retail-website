@@ -36,7 +36,7 @@ export default function Checkout() {
     if (!validate()) return
 
     // Build WhatsApp message
-    let message = `🛒 *New Order from RetailMart*\n\n`
+    let message = `🛒 *New Order from Gopal Shop*\n\n`
     message += `👤 *Customer:* ${form.name}\n`
     message += `📞 *Phone:* ${form.phone}\n`
     message += `📍 *Address:* ${form.address}\n`

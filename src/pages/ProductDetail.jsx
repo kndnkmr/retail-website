@@ -1,14 +1,24 @@
 import { useParams, Link } from 'react-router-dom'
 import { ArrowLeft, ShoppingCart, Star, Package, Truck, Shield, Minus, Plus } from 'lucide-react'
 import { useState } from 'react'
-import products from '../data/products.json'
+import { useProducts } from '../context/ProductsContext'
 import { useCart } from '../context/CartContext'
 import ProductCard from '../components/ProductCard'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function ProductDetail() {
   const { id } = useParams()
+  const { products, loading } = useProducts()
   const { addToCart } = useCart()
   const [qty, setQty] = useState(1)
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <LoadingSpinner />
+      </div>
+    )
+  }
 
   const product = products.find(p => p.id === Number(id))
 

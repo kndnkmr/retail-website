@@ -5,10 +5,10 @@ export default function About() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Hero */}
       <div className="text-center max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900">About RetailMart</h1>
+        <h1 className="text-4xl font-bold text-gray-900">About Gopal Shop</h1>
         <p className="mt-4 text-lg text-gray-600 leading-relaxed">
           We are your trusted neighborhood store that has been serving the community
-          for over 10 years. Now we're bringing the same quality and trust online,
+          for years. Now we're bringing the same quality and trust online,
           making it easier for you to shop from the comfort of your home.
         </p>
       </div>
@@ -41,7 +41,7 @@ export default function About() {
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Our Story</h2>
           <p className="mt-4 text-gray-600 leading-relaxed">
-            RetailMart started as a small kirana store in the heart of the city. Over the years,
+            Gopal Shop started as a small kirana store in the heart of the city. Over the years,
             we've grown by staying true to our values — fresh products, honest pricing, and
             genuine customer care.
           </p>

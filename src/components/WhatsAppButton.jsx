@@ -4,7 +4,7 @@ const WHATSAPP_NUMBER = '919742306716'
 
 export default function WhatsAppButton() {
   const handleClick = () => {
-    const message = encodeURIComponent('Hi! I have a query about your products.')
+    const message = encodeURIComponent('Hi! I have a query about products at Gopal Shop.')
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank')
   }
 

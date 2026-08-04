@@ -25,7 +25,7 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-2">
             <Store className="w-8 h-8 text-primary-600" />
             <span className="text-xl font-bold text-gray-800">
-              Retail<span className="text-primary-600">Mart</span>
+              Gopal<span className="text-primary-600">Shop</span>
             </span>
           </Link>
 

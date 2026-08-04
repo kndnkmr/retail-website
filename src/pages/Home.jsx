@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Truck, Shield, Clock, Tag } from 'lucide-react'
-import products from '../data/products.json'
-import categories from '../data/categories.json'
+import { useProducts } from '../context/ProductsContext'
 import ProductCard from '../components/ProductCard'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function Home() {
+  const { products, categories, loading } = useProducts()
   const featuredProducts = products.slice(0, 8)
 
   return (
@@ -68,41 +69,43 @@ export default function Home() {
       </section>
 
       {/* Categories */}
-      <section className="py-12 md:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center mb-8">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Shop by Category</h2>
-              <p className="text-gray-500 mt-1">Find what you need quickly</p>
-            </div>
-            <Link to="/products" className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center gap-1">
-              View All <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            {categories.map(cat => (
-              <Link
-                key={cat.name}
-                to={`/products?category=${encodeURIComponent(cat.name)}`}
-                className="group text-center"
-              >
-                <div className="relative overflow-hidden rounded-xl aspect-square mb-2">
-                  <img
-                    src={cat.image}
-                    alt={cat.name}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors"></div>
-                </div>
-                <span className="text-xs md:text-sm font-medium text-gray-700 group-hover:text-primary-600 transition-colors">
-                  {cat.name}
-                </span>
+      {categories.length > 0 && (
+        <section className="py-12 md:py-16">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center mb-8">
+              <div>
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900">Shop by Category</h2>
+                <p className="text-gray-500 mt-1">Find what you need quickly</p>
+              </div>
+              <Link to="/products" className="text-primary-600 hover:text-primary-700 font-medium text-sm flex items-center gap-1">
+                View All <ArrowRight className="w-4 h-4" />
               </Link>
-            ))}
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-4">
+              {categories.map(cat => (
+                <Link
+                  key={cat.name}
+                  to={`/products?category=${encodeURIComponent(cat.name)}`}
+                  className="group text-center"
+                >
+                  <div className="relative overflow-hidden rounded-xl aspect-square mb-2">
+                    <img
+                      src={cat.image}
+                      alt={cat.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors"></div>
+                  </div>
+                  <span className="text-xs md:text-sm font-medium text-gray-700 group-hover:text-primary-600 transition-colors">
+                    {cat.name}
+                  </span>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Featured Products */}
       <section className="py-12 md:py-16 bg-gray-50">
@@ -116,11 +119,15 @@ export default function Home() {
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {featuredProducts.map(product => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {loading ? (
+            <LoadingSpinner />
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+              {featuredProducts.map(product => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

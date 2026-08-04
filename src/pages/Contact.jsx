@@ -54,7 +54,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-medium text-gray-800">Email</h3>
-                  <p className="text-sm text-gray-600 mt-1">support@retailmart.com</p>
+                  <p className="text-sm text-gray-600 mt-1">gopalshop@gmail.com</p>
                 </div>
               </div>
 

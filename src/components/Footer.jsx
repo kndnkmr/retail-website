@@ -11,12 +11,12 @@ export default function Footer() {
             <Link to="/" className="flex items-center gap-2 mb-4">
               <Store className="w-8 h-8 text-primary-400" />
               <span className="text-xl font-bold text-white">
-                Retail<span className="text-primary-400">Mart</span>
+                Gopal<span className="text-primary-400">Shop</span>
               </span>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">
               Your trusted neighborhood store bringing quality products at the best prices.
-              Fresh groceries, daily essentials, and more delivered to your doorstep.
+              Fresh groceries, daily essentials, and more — now order online!
             </p>
           </div>
 
@@ -58,7 +58,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-primary-400 flex-shrink-0" />
-                <span className="text-sm">support@retailmart.com</span>
+                <span className="text-sm">gopalshop@gmail.com</span>
               </li>
               <li className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-primary-400 flex-shrink-0" />
@@ -70,7 +70,7 @@ export default function Footer() {
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
           <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} RetailMart. All rights reserved. | Made with ❤️ for our customers
+            © {new Date().getFullYear()} Gopal Shop. All rights reserved. | Made with ❤️ for our customers
           </p>
         </div>
       </div>

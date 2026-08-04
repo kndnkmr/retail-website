@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
-import products from '../data/products.json'
-import categories from '../data/categories.json'
+import { useProducts } from '../context/ProductsContext'
 import ProductCard from '../components/ProductCard'
+import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function Products() {
+  const { products, categories, loading } = useProducts()
   const [searchParams, setSearchParams] = useSearchParams()
   const [searchTerm, setSearchTerm] = useState('')
   const [sortBy, setSortBy] = useState('featured')
@@ -59,7 +60,15 @@ export default function Products() {
     }
 
     return filtered
-  }, [selectedCategory, searchTerm, sortBy])
+  }, [products, selectedCategory, searchTerm, sortBy])
+
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <LoadingSpinner />
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
