@@ -1,7 +1,14 @@
 import { Link } from 'react-router-dom'
 import { Store, MapPin, Phone, Mail, Clock } from 'lucide-react'
+import { useSettings } from '../context/SettingsContext'
 
 export default function Footer() {
+  const { settings } = useSettings()
+
+  const nameParts = settings.shopName.split(' ')
+  const firstName = nameParts[0]
+  const restName = nameParts.slice(1).join(' ')
+
   return (
     <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -11,12 +18,11 @@ export default function Footer() {
             <Link to="/" className="flex items-center gap-2 mb-4">
               <Store className="w-8 h-8 text-primary-400" />
               <span className="text-xl font-bold text-white">
-                Gopal<span className="text-primary-400">Shop</span>
+                {firstName}<span className="text-primary-400">{restName ? ` ${restName}` : ''}</span>
               </span>
             </Link>
             <p className="text-sm text-gray-400 leading-relaxed">
-              Your trusted neighborhood store bringing quality products at the best prices.
-              Fresh groceries, daily essentials, and more — now order online!
+              {settings.tagline}. Fresh groceries, daily essentials, and more — now order online!
             </p>
           </div>
 
@@ -50,19 +56,19 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 text-primary-400 flex-shrink-0" />
-                <span className="text-sm">123 Market Street, Main Road, Bangalore - 560001</span>
+                <span className="text-sm">{settings.address}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-primary-400 flex-shrink-0" />
-                <span className="text-sm">+91 9742306716</span>
+                <span className="text-sm">{settings.phone}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-primary-400 flex-shrink-0" />
-                <span className="text-sm">gopalshop@gmail.com</span>
+                <span className="text-sm">{settings.email}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-primary-400 flex-shrink-0" />
-                <span className="text-sm">Mon-Sun: 8:00 AM - 10:00 PM</span>
+                <span className="text-sm">{settings.workingHours}</span>
               </li>
             </ul>
           </div>
@@ -70,7 +76,7 @@ export default function Footer() {
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center">
           <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} Gopal Shop. All rights reserved. | Made with ❤️ for our customers
+            © {new Date().getFullYear()} {settings.shopName}. All rights reserved.
           </p>
         </div>
       </div>

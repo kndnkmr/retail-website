@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { ShoppingCart, Menu, X, Store, Search } from 'lucide-react'
+import { ShoppingCart, Menu, X, Store } from 'lucide-react'
 import { useCart } from '../context/CartContext'
+import { useSettings } from '../context/SettingsContext'
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const { totalItems } = useCart()
+  const { settings } = useSettings()
   const location = useLocation()
 
   const navLinks = [
@@ -17,6 +19,11 @@ export default function Navbar() {
 
   const isActive = (path) => location.pathname === path
 
+  // Split shop name for styling (first word normal, rest colored)
+  const nameParts = settings.shopName.split(' ')
+  const firstName = nameParts[0]
+  const restName = nameParts.slice(1).join(' ')
+
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,7 +32,7 @@ export default function Navbar() {
           <Link to="/" className="flex items-center gap-2">
             <Store className="w-8 h-8 text-primary-600" />
             <span className="text-xl font-bold text-gray-800">
-              Gopal<span className="text-primary-600">Shop</span>
+              {firstName}<span className="text-primary-600">{restName ? ` ${restName}` : ''}</span>
             </span>
           </Link>
 
@@ -57,7 +64,6 @@ export default function Navbar() {
               )}
             </Link>
 
-            {/* Mobile menu button */}
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="md:hidden p-2 text-gray-600"

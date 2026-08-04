@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Truck, Shield, Clock, Tag } from 'lucide-react'
 import { useProducts } from '../context/ProductsContext'
+import { useSettings } from '../context/SettingsContext'
 import ProductCard from '../components/ProductCard'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 export default function Home() {
   const { products, categories, loading } = useProducts()
+  const { settings } = useSettings()
   const featuredProducts = products.slice(0, 8)
 
   return (
@@ -20,13 +22,13 @@ export default function Home() {
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div>
               <span className="inline-block bg-white/20 text-white text-sm font-medium px-4 py-1 rounded-full mb-4">
-                🎉 Free delivery on orders above ₹500
+                🎉 Free delivery on orders above {settings.currency}{settings.freeDeliveryAbove}
               </span>
               <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-                Fresh Groceries at Your Doorstep
+                {settings.heroTitle}
               </h1>
               <p className="mt-4 text-lg text-blue-100 leading-relaxed">
-                Quality products at the best prices. Order now and get it delivered fresh to your home. Your trusted neighborhood store, now online!
+                {settings.heroSubtitle}
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link to="/products" className="bg-white text-primary-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">
@@ -39,7 +41,7 @@ export default function Home() {
             </div>
             <div className="hidden md:block">
               <img
-                src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600&h=400&fit=crop"
+                src={settings.heroImage}
                 alt="Fresh groceries"
                 className="rounded-2xl shadow-2xl"
               />
@@ -53,7 +55,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
-              { icon: Truck, title: 'Free Delivery', desc: 'On orders above ₹500' },
+              { icon: Truck, title: 'Free Delivery', desc: `On orders above ${settings.currency}${settings.freeDeliveryAbove}` },
               { icon: Shield, title: 'Secure Payment', desc: 'Cash on delivery available' },
               { icon: Clock, title: 'Same Day Delivery', desc: 'Order before 2 PM' },
               { icon: Tag, title: 'Best Prices', desc: 'Lowest price guaranteed' },

@@ -1,9 +1,14 @@
 import { Link } from 'react-router-dom'
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft } from 'lucide-react'
 import { useCart } from '../context/CartContext'
+import { useSettings } from '../context/SettingsContext'
 
 export default function Cart() {
   const { cart, removeFromCart, increment, decrement, totalItems, totalPrice } = useCart()
+  const { settings } = useSettings()
+
+  const freeDeliveryAbove = parseInt(settings.freeDeliveryAbove) || 500
+  const deliveryFee = parseInt(settings.deliveryFee) || 40
 
   if (cart.length === 0) {
     return (
@@ -48,7 +53,7 @@ export default function Cart() {
                   </h3>
                 </Link>
                 <p className="text-sm text-gray-500">{item.quantity}</p>
-                <p className="text-lg font-bold text-gray-900 mt-1">₹{item.price}</p>
+                <p className="text-lg font-bold text-gray-900 mt-1">{settings.currency}{item.price}</p>
 
                 <div className="flex items-center justify-between mt-3">
                   <div className="flex items-center border border-gray-200 rounded-lg">
@@ -80,7 +85,7 @@ export default function Cart() {
               </div>
 
               <div className="hidden sm:block text-right">
-                <p className="font-bold text-gray-900">₹{item.price * item.qty}</p>
+                <p className="font-bold text-gray-900">{settings.currency}{item.price * item.qty}</p>
               </div>
             </div>
           ))}
@@ -94,22 +99,22 @@ export default function Cart() {
             <div className="space-y-3 text-sm">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal ({totalItems} items)</span>
-                <span>₹{totalPrice}</span>
+                <span>{settings.currency}{totalPrice}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Delivery</span>
-                <span className={totalPrice >= 500 ? 'text-green-600 font-medium' : ''}>
-                  {totalPrice >= 500 ? 'FREE' : '₹40'}
+                <span className={totalPrice >= freeDeliveryAbove ? 'text-green-600 font-medium' : ''}>
+                  {totalPrice >= freeDeliveryAbove ? 'FREE' : `${settings.currency}${deliveryFee}`}
                 </span>
               </div>
-              {totalPrice < 500 && (
+              {totalPrice < freeDeliveryAbove && (
                 <p className="text-xs text-primary-600 bg-primary-50 p-2 rounded-lg">
-                  Add ₹{500 - totalPrice} more for free delivery!
+                  Add {settings.currency}{freeDeliveryAbove - totalPrice} more for free delivery!
                 </p>
               )}
               <div className="border-t pt-3 flex justify-between font-bold text-lg text-gray-900">
                 <span>Total</span>
-                <span>₹{totalPrice >= 500 ? totalPrice : totalPrice + 40}</span>
+                <span>{settings.currency}{totalPrice >= freeDeliveryAbove ? totalPrice : totalPrice + deliveryFee}</span>
               </div>
             </div>
 

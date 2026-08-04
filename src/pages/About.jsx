@@ -1,11 +1,14 @@
 import { Users, Award, Clock, Heart } from 'lucide-react'
+import { useSettings } from '../context/SettingsContext'
 
 export default function About() {
+  const { settings } = useSettings()
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {/* Hero */}
       <div className="text-center max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900">About Gopal Shop</h1>
+        <h1 className="text-4xl font-bold text-gray-900">About {settings.shopName}</h1>
         <p className="mt-4 text-lg text-gray-600 leading-relaxed">
           We are your trusted neighborhood store that has been serving the community
           for years. Now we're bringing the same quality and trust online,
@@ -33,7 +36,7 @@ export default function About() {
       <div className="mt-16 grid md:grid-cols-2 gap-8 items-center">
         <div>
           <img
-            src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600&h=400&fit=crop"
+            src={settings.heroImage}
             alt="Our store"
             className="rounded-2xl shadow-lg w-full"
           />
@@ -41,7 +44,7 @@ export default function About() {
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Our Story</h2>
           <p className="mt-4 text-gray-600 leading-relaxed">
-            Gopal Shop started as a small kirana store in the heart of the city. Over the years,
+            {settings.shopName} started as a small kirana store in the heart of the city. Over the years,
             we've grown by staying true to our values — fresh products, honest pricing, and
             genuine customer care.
           </p>

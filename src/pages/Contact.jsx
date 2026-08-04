@@ -1,11 +1,12 @@
 import { MapPin, Phone, Mail, Clock, MessageCircle } from 'lucide-react'
-
-const WHATSAPP_NUMBER = '919742306716'
+import { useSettings } from '../context/SettingsContext'
 
 export default function Contact() {
+  const { settings } = useSettings()
+
   const handleWhatsApp = () => {
     const message = encodeURIComponent('Hi! I have a question about your products/services.')
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank')
+    window.open(`https://wa.me/${settings.whatsappNumber}?text=${message}`, '_blank')
   }
 
   return (
@@ -31,10 +32,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-medium text-gray-800">Store Address</h3>
-                  <p className="text-sm text-gray-600 mt-1">
-                    123 Market Street, Main Road<br />
-                    Bangalore, Karnataka - 560001
-                  </p>
+                  <p className="text-sm text-gray-600 mt-1">{settings.address}</p>
                 </div>
               </div>
 
@@ -44,7 +42,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-medium text-gray-800">Phone</h3>
-                  <p className="text-sm text-gray-600 mt-1">+91 9742306716</p>
+                  <p className="text-sm text-gray-600 mt-1">{settings.phone}</p>
                 </div>
               </div>
 
@@ -54,7 +52,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-medium text-gray-800">Email</h3>
-                  <p className="text-sm text-gray-600 mt-1">gopalshop@gmail.com</p>
+                  <p className="text-sm text-gray-600 mt-1">{settings.email}</p>
                 </div>
               </div>
 
@@ -65,8 +63,8 @@ export default function Contact() {
                 <div>
                   <h3 className="font-medium text-gray-800">Working Hours</h3>
                   <p className="text-sm text-gray-600 mt-1">
-                    Monday - Sunday: 8:00 AM - 10:00 PM<br />
-                    Delivery: 9:00 AM - 9:00 PM
+                    {settings.workingHours}<br />
+                    Delivery: {settings.deliveryHours}
                   </p>
                 </div>
               </div>
@@ -92,7 +90,7 @@ export default function Contact() {
         {/* Map / Image */}
         <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=600&h=300&fit=crop"
+            src={settings.heroImage}
             alt="Our store"
             className="w-full h-48 object-cover"
           />
@@ -105,9 +103,9 @@ export default function Contact() {
             <div className="mt-4 bg-gray-100 rounded-lg p-4">
               <p className="text-sm text-gray-700 font-medium">How to reach us:</p>
               <ul className="text-sm text-gray-600 mt-2 space-y-1 list-disc list-inside">
-                <li>5 mins walk from Main Bus Stand</li>
-                <li>Near City Market Junction</li>
-                <li>Landmark: Next to State Bank</li>
+                {settings.landmark1 && <li>{settings.landmark1}</li>}
+                {settings.landmark2 && <li>{settings.landmark2}</li>}
+                {settings.landmark3 && <li>{settings.landmark3}</li>}
               </ul>
             </div>
           </div>

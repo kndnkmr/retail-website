@@ -2,11 +2,11 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ArrowLeft, MessageCircle, User, Phone, MapPin, FileText } from 'lucide-react'
 import { useCart } from '../context/CartContext'
-
-const WHATSAPP_NUMBER = '919742306716'
+import { useSettings } from '../context/SettingsContext'
 
 export default function Checkout() {
   const { cart, totalItems, totalPrice, clearCart } = useCart()
+  const { settings } = useSettings()
   const navigate = useNavigate()
 
   const [form, setForm] = useState({
@@ -18,7 +18,9 @@ export default function Checkout() {
 
   const [errors, setErrors] = useState({})
 
-  const delivery = totalPrice >= 500 ? 0 : 40
+  const deliveryFee = parseInt(settings.deliveryFee) || 40
+  const freeDeliveryAbove = parseInt(settings.freeDeliveryAbove) || 500
+  const delivery = totalPrice >= freeDeliveryAbove ? 0 : deliveryFee
   const grandTotal = totalPrice + delivery
 
   const validate = () => {
@@ -36,7 +38,7 @@ export default function Checkout() {
     if (!validate()) return
 
     // Build WhatsApp message
-    let message = `🛒 *New Order from Gopal Shop*\n\n`
+    let message = `🛒 *New Order from ${settings.shopName}*\n\n`
     message += `👤 *Customer:* ${form.name}\n`
     message += `📞 *Phone:* ${form.phone}\n`
     message += `📍 *Address:* ${form.address}\n`
@@ -45,22 +47,19 @@ export default function Checkout() {
 
     cart.forEach((item, i) => {
       message += `${i + 1}. ${item.name} (${item.quantity})\n`
-      message += `   Qty: ${item.qty} × ₹${item.price} = ₹${item.qty * item.price}\n\n`
+      message += `   Qty: ${item.qty} × ${settings.currency}${item.price} = ${settings.currency}${item.qty * item.price}\n\n`
     })
 
     message += `---\n`
-    message += `📦 *Subtotal:* ₹${totalPrice}\n`
-    message += `🚚 *Delivery:* ${delivery === 0 ? 'FREE' : '₹' + delivery}\n`
-    message += `💰 *Total:* ₹${grandTotal}\n\n`
+    message += `📦 *Subtotal:* ${settings.currency}${totalPrice}\n`
+    message += `🚚 *Delivery:* ${delivery === 0 ? 'FREE' : settings.currency + delivery}\n`
+    message += `💰 *Total:* ${settings.currency}${grandTotal}\n\n`
     message += `Thank you for ordering! 🙏`
 
     const encodedMessage = encodeURIComponent(message)
-    const whatsappURL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`
+    const whatsappURL = `https://wa.me/${settings.whatsappNumber}?text=${encodedMessage}`
 
-    // Open WhatsApp
     window.open(whatsappURL, '_blank')
-
-    // Clear cart and redirect
     clearCart()
     navigate('/order-success')
   }
@@ -91,7 +90,6 @@ export default function Checkout() {
             <h2 className="text-lg font-bold text-gray-900 mb-4">Delivery Details</h2>
 
             <div className="space-y-4">
-              {/* Name */}
               <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
                   <User className="w-4 h-4" /> Full Name
@@ -108,7 +106,6 @@ export default function Checkout() {
                 {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
               </div>
 
-              {/* Phone */}
               <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
                   <Phone className="w-4 h-4" /> Phone Number
@@ -125,7 +122,6 @@ export default function Checkout() {
                 {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
               </div>
 
-              {/* Address */}
               <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
                   <MapPin className="w-4 h-4" /> Delivery Address
@@ -142,7 +138,6 @@ export default function Checkout() {
                 {errors.address && <p className="text-red-500 text-xs mt-1">{errors.address}</p>}
               </div>
 
-              {/* Notes */}
               <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
                   <FileText className="w-4 h-4" /> Order Notes (Optional)
@@ -158,7 +153,6 @@ export default function Checkout() {
             </div>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             className="w-full bg-green-500 hover:bg-green-600 text-white px-6 py-4 rounded-xl font-semibold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all text-lg"
@@ -183,9 +177,9 @@ export default function Checkout() {
                   <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-800 truncate">{item.name}</p>
-                    <p className="text-xs text-gray-500">{item.qty} × ₹{item.price}</p>
+                    <p className="text-xs text-gray-500">{item.qty} × {settings.currency}{item.price}</p>
                   </div>
-                  <p className="text-sm font-semibold text-gray-900">₹{item.qty * item.price}</p>
+                  <p className="text-sm font-semibold text-gray-900">{settings.currency}{item.qty * item.price}</p>
                 </div>
               ))}
             </div>
@@ -193,17 +187,17 @@ export default function Checkout() {
             <div className="border-t mt-4 pt-4 space-y-2 text-sm">
               <div className="flex justify-between text-gray-600">
                 <span>Subtotal ({totalItems} items)</span>
-                <span>₹{totalPrice}</span>
+                <span>{settings.currency}{totalPrice}</span>
               </div>
               <div className="flex justify-between text-gray-600">
                 <span>Delivery</span>
                 <span className={delivery === 0 ? 'text-green-600 font-medium' : ''}>
-                  {delivery === 0 ? 'FREE' : `₹${delivery}`}
+                  {delivery === 0 ? 'FREE' : `${settings.currency}${delivery}`}
                 </span>
               </div>
               <div className="border-t pt-2 flex justify-between font-bold text-lg text-gray-900">
                 <span>Total</span>
-                <span>₹{grandTotal}</span>
+                <span>{settings.currency}{grandTotal}</span>
               </div>
             </div>
           </div>

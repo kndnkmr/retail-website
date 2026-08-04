@@ -1,11 +1,12 @@
 import { MessageCircle } from 'lucide-react'
-
-const WHATSAPP_NUMBER = '919742306716'
+import { useSettings } from '../context/SettingsContext'
 
 export default function WhatsAppButton() {
+  const { settings } = useSettings()
+
   const handleClick = () => {
-    const message = encodeURIComponent('Hi! I have a query about products at Gopal Shop.')
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank')
+    const message = encodeURIComponent(`Hi! I have a query about products at ${settings.shopName}.`)
+    window.open(`https://wa.me/${settings.whatsappNumber}?text=${message}`, '_blank')
   }
 
   return (

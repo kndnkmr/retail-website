@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
 import { CheckCircle, MessageCircle, Home } from 'lucide-react'
+import { useSettings } from '../context/SettingsContext'
 
 export default function OrderSuccess() {
+  const { settings } = useSettings()
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-16 text-center">
       <CheckCircle className="w-20 h-20 text-green-500 mx-auto mb-6" />
@@ -19,7 +22,7 @@ export default function OrderSuccess() {
           Check your WhatsApp to see the order message sent to us.
         </p>
         <p className="text-green-600 text-sm mt-1">
-          If WhatsApp didn't open, you can reach us at +91 9742306716
+          If WhatsApp didn't open, you can reach us at {settings.phone}
         </p>
       </div>
 

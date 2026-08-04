@@ -53,15 +53,14 @@ npm run build
 
 ## Product Management (Google Sheets)
 
-The shop owner manages all products from a Google Sheet — no coding needed.
+The shop owner manages all products AND shop settings from a Google Sheet — no coding needed. **Zero developer involvement after initial setup.**
 
 ### Setup
 
-1. Create a Google Sheet with a tab named **Products**
-2. Add headers in Row 1: `id | name | category | price | originalPrice | quantity | image | description | inStock | rating | reviews`
-3. Add products in rows below
-4. Publish the sheet: File → Share → Publish to web → CSV
-5. Copy the Sheet ID from the URL and update `src/utils/googleSheets.js`
+1. Create a Google Sheet with two tabs: **Products** and **Settings**
+2. Add products in the Products tab, settings in the Settings tab
+3. Publish the sheet: File → Share → Publish to web → Entire Document → CSV
+4. Copy the Sheet ID from the URL and update `src/utils/googleSheets.js`
 
 ### Column Reference
 
@@ -90,6 +89,32 @@ The shop owner manages all products from a Google Sheet — no coding needed.
 | New category | Type new category name — auto-appears on site |
 
 Changes reflect on the website within 5 minutes.
+
+### Settings Tab (Owner controls everything)
+
+The **Settings** tab has two columns: `key` and `value`. The owner can change any of these:
+
+| Key | What it controls | Default Value |
+|-----|-----------------|---------------|
+| shopName | Store name everywhere | Gopal Shop |
+| tagline | Subtitle under logo | Your Trusted Neighborhood Store |
+| whatsappNumber | Order receiving number | 919742306716 |
+| phone | Display phone | +91 9742306716 |
+| email | Contact email | gopalshop@gmail.com |
+| address | Store address | 123 Market Street... |
+| workingHours | Working hours | Mon-Sun: 8:00 AM - 10:00 PM |
+| deliveryHours | Delivery time | 9:00 AM - 9:00 PM |
+| deliveryFee | Delivery charge | 40 |
+| freeDeliveryAbove | Free delivery min order | 500 |
+| heroTitle | Homepage headline | Fresh Groceries at Your Doorstep |
+| heroSubtitle | Homepage description | Quality products at... |
+| heroImage | Homepage banner image URL | (Unsplash URL) |
+| landmark1 | Direction hint 1 | 5 mins walk from Bus Stand |
+| landmark2 | Direction hint 2 | Near City Market |
+| landmark3 | Direction hint 3 | Next to State Bank |
+| currency | Currency symbol | ₹ |
+
+**The owner never needs to touch any code. Everything is controlled from the spreadsheet.**
 
 ## WhatsApp Integration
 
