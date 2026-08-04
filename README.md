@@ -2,7 +2,7 @@
 
 A modern, responsive e-commerce website for Gopal Shop with WhatsApp-based ordering and Google Sheets product management.
 
-**Live Site:** [https://kndnkmr.github.io/retail-website/](https://kndnkmr.github.io/retail-website/)
+**Live Site:** [https://gopalshopvercelapp.vercel.app](https://gopalshopvercelapp.vercel.app)
 
 **Google Sheet (Product Management):** [Open Sheet](https://docs.google.com/spreadsheets/d/1xhW_FEdi-KjIHbWP6XyJx82LzQznE_tHRm2SlRo0Yp8/edit)
 
@@ -16,7 +16,7 @@ A modern, responsive e-commerce website for Gopal Shop with WhatsApp-based order
 - Floating WhatsApp button for quick contact
 - Google Sheets integration — owner manages products & settings from a spreadsheet
 - Fully responsive (mobile, tablet, desktop)
-- Auto-deploys via GitHub Actions on every push
+- Auto-deploys via Vercel on every push
 - No backend, no database, no paid services — 100% free
 
 ---
@@ -32,8 +32,8 @@ A modern, responsive e-commerce website for Gopal Shop with WhatsApp-based order
 | Icons | Lucide React | Free |
 | Data Source | Google Sheets (CSV) with local JSON fallback | Free |
 | Images | Unsplash / ImgBB | Free |
-| Hosting | GitHub Pages | Free |
-| CI/CD | GitHub Actions | Free |
+| Hosting | Vercel | Free |
+| CI/CD | Vercel (auto-deploy from GitHub) | Free |
 | Order System | WhatsApp link API (wa.me) | Free |
 
 ---
@@ -228,25 +228,31 @@ The owner needs image URLs for each product. Here's how:
 
 ---
 
-## GitHub Pages Hosting
+## Hosting (Vercel)
 
 ### How it works
 - Code lives on GitHub (free for public repos)
-- GitHub Actions automatically builds and deploys on every push
-- Site is served at: `https://kndnkmr.github.io/retail-website/`
+- Vercel automatically builds and deploys on every push to `main`
+- Site is served at: `https://gopalshopvercelapp.vercel.app`
 - Free HTTPS included
-- No expiration — stays live as long as the repo exists
+- No expiration — stays live as long as the Vercel project exists
+- 100 GB bandwidth/month (free tier)
 
-### Deployment workflow
-Located at `.github/workflows/deploy.yml`. Triggers on:
-- Every push to `main` branch
-- Manual trigger from Actions tab
+### How Vercel deploys
+- Every push to `main` branch triggers auto-deploy
+- Preview deployments are created for other branches
+- No workflow files needed — Vercel handles everything
+
+### Vercel Dashboard
+- Login at [vercel.com](https://vercel.com) with your GitHub account
+- Project: `gopalshop`
+- Settings → Domains: change or add custom domains
 
 ### Custom Domain (Optional, paid)
 To use your own domain (e.g., `gopalshop.com`):
 1. Buy a domain (~₹500-800/year from GoDaddy, Namecheap, etc.)
-2. Go to repo Settings → Pages → Custom domain
-3. Add your domain and configure DNS as instructed
+2. Go to Vercel Project Settings → Domains
+3. Add your domain and configure DNS as instructed by Vercel
 
 ---
 
@@ -254,7 +260,8 @@ To use your own domain (e.g., `gopalshop.com`):
 
 ```
 retail-website/
-├── .github/workflows/deploy.yml  # Auto-deploy to GitHub Pages
+├── vercel.json                    # Vercel routing config (SPA support)
+├── .github/workflows/deploy.yml  # GitHub Pages deploy (backup)
 ├── public/                        # Static assets
 ├── src/
 │   ├── components/               # Reusable UI components
@@ -301,8 +308,8 @@ retail-website/
 | Old data showing | Clear browser cache or wait 5 minutes for cache to expire |
 | Images not loading | Make sure image URLs are direct links (ending in .jpg/.png) |
 | WhatsApp not opening | Check `whatsappNumber` in Settings tab — should be country code + number, no + sign (e.g., 919742306716) |
-| Site shows 404 | Go to repo Settings → Pages → Source should be "GitHub Actions" |
-| Build failing | Check Actions tab for error logs. Usually a typo in code. |
+| Site shows 404 on refresh | This is handled by `vercel.json` — should not happen on Vercel |
+| Build failing | Check Vercel dashboard → Deployments for error logs |
 
 ---
 
@@ -316,7 +323,7 @@ If you want to understand how this was built:
 | Tailwind CSS | [tailwindcss.com/docs](https://tailwindcss.com/docs) |
 | Vite | [vitejs.dev](https://vitejs.dev) |
 | React Router | [reactrouter.com](https://reactrouter.com) |
-| GitHub Pages | [pages.github.com](https://pages.github.com) |
+| Vercel | [vercel.com/docs](https://vercel.com/docs) |
 | GitHub Actions | [docs.github.com/actions](https://docs.github.com/en/actions) |
 
 ---
