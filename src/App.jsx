@@ -19,7 +19,7 @@ export default function App() {
     <SettingsProvider>
       <ProductsProvider>
         <CartProvider>
-          <Router basename="/retail-website">
+          <Router basename="/">
             <div className="min-h-screen flex flex-col">
               <Navbar />
               <main className="flex-1">
